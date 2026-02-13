@@ -10,3 +10,11 @@ export const loginUser = async (loginData: any) => {
     throw error.response?.data || "Terjadi kesalahan saat login";
   }
 };
+export const registerUser = async (registerData: any) => {
+  try {
+    const response = await api.post("/Auth/register", registerData);
+    return response.data;
+  } catch (error: any) {
+    throw error.response?.data || "Gagal melakukan registrasi";
+  }
+};
