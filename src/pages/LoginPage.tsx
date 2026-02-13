@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { loginUser } from "../api/authApi"; // Import fungsi API
 import { Eye, EyeOff, } from "lucide-react"; // 1. Impor ikonnya
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 type Errors = {
   email: string;
@@ -9,13 +9,11 @@ type Errors = {
 };
 
 const LoginPage = () => {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
-  const [errors, setErrors] = useState<Errors>({
-    email: "",
-    password: "",
-  }); // error per input
+  const [errors, setErrors] = useState<Errors>({email: "", password: "",}); // error per input
   const [authError, setAuthError] = useState(""); // error global
   const [loading, setLoading] = useState(false); // State untuk loading
   const [showPassword, setShowPassword] = useState(false);
@@ -29,10 +27,7 @@ const LoginPage = () => {
     setAuthError("");
     setSuccessMsg("");
 
-    let newErrors: Errors = {
-      email: "",
-      password: "",
-    };
+    let newErrors: Errors = {email: "",password: "",};
 
     let isValid = true;
 
@@ -61,6 +56,11 @@ const LoginPage = () => {
       // Ambil pesan sukses dari Swagger 
       setSuccessMsg(result.message);
       console.log("Data User:", result.user);
+
+      //delay sedikit (misal 1.5 detik)
+      setTimeout(() => {
+        navigate("/dashboard");
+      }, 1500);
 
       // Nanti di sini bisa arahkan ke halaman tujuan
     } catch (error: any) {
