@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { loginUser } from "../api/authApi"; // Import fungsi API
-import { Eye, EyeOff, } from "lucide-react"; // 1. Impor ikonnya
+import { loginUser } from "../api/authApi"; 
+import { Eye, EyeOff, } from "lucide-react"; 
 import { Link, useNavigate } from "react-router-dom";
 
 type Errors = {
@@ -13,9 +13,9 @@ const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
-  const [errors, setErrors] = useState<Errors>({email: "", password: "",}); // error per input
-  const [authError, setAuthError] = useState(""); // error global
-  const [loading, setLoading] = useState(false); // State untuk loading
+  const [errors, setErrors] = useState<Errors>({ email: "", password: "", }); 
+  const [authError, setAuthError] = useState(""); 
+  const [loading, setLoading] = useState(false); 
   const [showPassword, setShowPassword] = useState(false);
 
   const isValidEmail = (value: string) =>
@@ -27,7 +27,7 @@ const LoginPage = () => {
     setAuthError("");
     setSuccessMsg("");
 
-    let newErrors: Errors = {email: "",password: "",};
+    let newErrors: Errors = { email: "", password: "", };
 
     let isValid = true;
 
@@ -53,16 +53,18 @@ const LoginPage = () => {
       const result = await loginUser({ email, password });
       // Jika berhasil, simpan token ke Local Storage
       localStorage.setItem("token", result.token);
+      // ubah objek result.user menjadi string agar bisa disimpan di localStorage
+      localStorage.setItem("user", JSON.stringify(result.user));
       // Ambil pesan sukses dari Swagger 
       setSuccessMsg(result.message);
       console.log("Data User:", result.user);
 
-      //delay sedikit (misal 1.5 detik)
+      //delay 1.5 detik
       setTimeout(() => {
         navigate("/dashboard");
       }, 1500);
 
-      // Nanti di sini bisa arahkan ke halaman tujuan
+      //  di sini bisa arahkan ke halaman tujuan
     } catch (error: any) {
       // Jika gagal (email salah/CORS error), tampilkan pesan error
       setAuthError(error);
@@ -75,7 +77,6 @@ const LoginPage = () => {
     <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
       <div className="bg-white p-8 md:p-10 rounded-2xl shadow-xl shadow-gray-200/50 w-full max-w-md border border-gray-100">
 
-        {/* Header */}
         <div className="text-center mb-8">
           <h2 className="text-2xl font-bold text-blue-950 tracking-tight">Login</h2>
           <p className="text-gray-500 mt-3">Yuk Booking Ruangan Kamu!</p>
@@ -116,9 +117,9 @@ const LoginPage = () => {
             {errors.password && (
               <p className="text-red-500 text-xs mb-1 italic">{errors.password}</p>
             )}
-            <div className="relative"> 
+            <div className="relative">
               <input
-                type={showPassword ? "text" : "password"} 
+                type={showPassword ? "text" : "password"}
                 value={password}
                 onChange={(e) => {
                   setPassword(e.target.value);
@@ -142,7 +143,7 @@ const LoginPage = () => {
             disabled={loading}
             className={`w-full py-3.5 rounded-xl mt-1 font-bold text-white shadow-lg transition-all duration-200 transform 
             ${loading
-                ? 'bg-blue-300 cursor-not-allowed scale-100' 
+                ? 'bg-blue-300 cursor-not-allowed scale-100'
                 : 'bg-blue-800 hover:bg-blue-900 active:bg-blue-950 active:scale-95 hover:shadow-blue-200'
               }`}
           >
