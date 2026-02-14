@@ -1,9 +1,23 @@
-import { LayoutDashboard, DoorOpen, LogOut, } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { LayoutDashboard, DoorOpen, LogOut, Warehouse } from "lucide-react";
+import { useNavigate, Link, useLocation } from "react-router-dom";
 import { useState } from "react";
 
 const Sidebar = () => {
+    const location = useLocation(); // Untuk mendeteksi menu mana yang sedang aktif
     const navigate = useNavigate();
+
+    const menuItems = [
+        {
+            title: "Dashboard",
+            path: "/dashboard",
+            icon: <LayoutDashboard size={20} />,
+        },
+        {
+            title: "Daftar Ruangan",
+            path: "/rooms", // Pastikan path ini sama dengan yang di App.tsx
+            icon: <Warehouse size={20} />, // Sesuaikan iconnya
+        },
+    ];
 
     // State untuk melacak menu mana yang aktif
     const [activeMenu, setActiveMenu] = useState("dashboard");
@@ -32,42 +46,48 @@ const Sidebar = () => {
             </div>
 
             {/* Menu Navigasi */}
-            <nav className="flex-1 space-y-4">
-                <button
-                    onClick={() => setActiveMenu("dashboard")}
-                    className={getMenuClass("dashboard")}
-                >
-                    <LayoutDashboard
-                        size={20}
-                        strokeWidth={activeMenu === "dashboard" ? 2.5 : 2} // Icon jadi lebih tebal
-                        className={activeMenu === "dashboard" ? "scale-110" : "group-hover:scale-110 transition-transform"}
-                    />
-                    <span className={activeMenu === "dashboard" ? "font-semibold" : "font-medium group-hover:font-semibold"}>
-                        Dashboard
-                    </span>
-                </button>
+            {/* --- HAPUS SEMUA ISI DI DALAM <nav> INI --- */}
+<nav className="flex-1 space-y-4">
+    {/* GANTI SEMUA BUTTON MANUAL DENGAN KODE DI BAWAH INI */}
+    {menuItems.map((item) => {
+        // Cek apakah menu ini sedang aktif berdasarkan URL
+        const isActive = location.pathname === item.path;
 
-                <button
-                    onClick={() => setActiveMenu("rooms")}
-                    className={getMenuClass("rooms")}
-                >
-                    <DoorOpen
-                        size={20}
-                        strokeWidth={activeMenu === "rooms" ? 2.5 : 2}
-                        className={activeMenu === "rooms" ? "scale-110" : "group-hover:scale-110 transition-transform"}
-                    />
-                    <span className={activeMenu === "rooms" ? "font-semibold" : "font-medium group-hover:font-semibold"}>
-                        Daftar Ruangan
-                    </span>
-                </button>
-            </nav>
+        return (
+            <Link
+                key={item.path}
+                to={item.path}
+                // Class ini diambil dari getMenuClass kamu agar warnanya TIDAK BERUBAH
+                className={`flex items-center gap-4 w-full p-3 transition-all rounded-xl group ${
+                    isActive
+                        ? "bg-blue-100 text-blue-800 shadow-md" // Warna saat aktif (punya kamu)
+                        : "text-blue-900/50 hover:bg-blue-50 hover:text-blue-800" // Warna saat biasa
+                }`}
+            >
+                {/* Icon: Logikanya sama seperti button kamu tadi */}
+                <div className="flex items-center justify-center">
+                    {/* Mengkloning icon agar bisa ditambah class dinamis */}
+                    {/* Kita ganti icon manual kamu dengan item.icon dari array */}
+                    <div className={`${isActive ? "scale-110" : "group-hover:scale-110 transition-transform"}`}>
+                        {item.icon}
+                    </div>
+                </div>
+
+                {/* Teks: Logikanya sama seperti span kamu tadi */}
+                <span className={isActive ? "font-semibold" : "font-medium group-hover:font-semibold"}>
+                    {item.title}
+                </span>
+            </Link>
+        );
+    })}
+</nav>
 
             {/* Tombol Keluar */}
             <button
                 onClick={handleLogout}
                 className="flex items-center gap-3 w-full p-3 mt-auto text-blue-900/50 hover:bg-red-50 hover:text-red-500 rounded-xl transition-all group">
                 <LogOut size={20}
-                    className="group-hover:scale-110 group-hover:stroke-[2.5px] transition-all"/>
+                    className="group-hover:scale-110 group-hover:stroke-[2.5px] transition-all" />
                 <span className="font-medium group-hover:font-semibold">Keluar</span>
             </button>
         </div>
