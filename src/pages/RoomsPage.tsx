@@ -12,28 +12,23 @@ interface Room {
     facilities: string;
     isAvailable: boolean;
     isDeleted: boolean;
-    image_url?: string; // Kolom baru yang akan kita tambah nanti
+    image_url?: string; 
 }
 
 // Data dummy untuk ngetes tampilan
 const RoomsPage = () => {
     const [rooms, setRooms] = useState<Room[]>([]);
-    const [loading, setLoading] = useState(true);
 
     // FUNGSI AMBIL DATA DARI BACKEND
     useEffect(() => {
         const fetchRooms = async () => {
             try {
-                // Ganti URL ini sesuai dengan alamat API backend kamu
+                // Ganti URL ini sesuai dengan alamat API backend
                 const response = await axios.get("http://localhost:5135/api/Room");
-
-                console.log("DATA DARI BACKEND:", response.data); // untuk debug
-
                 setRooms(response.data);
             } catch (error) {
                 console.error("Gagal mengambil data ruangan:", error);
             } finally {
-                setLoading(false);
             }
         };
 
@@ -43,7 +38,7 @@ const RoomsPage = () => {
     return (
         <div className="flex bg-blue-50 min-h-screen">
             <Sidebar />
-            <main className="flex-1 p-8 md:p-12 overflow-y-auto">
+            <main className="flex-1 px-8 pt-20 pb-12 md:px-12 h-screen overflow-y-auto">
                 {/* Header Halaman */}
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
                     <div>
@@ -93,7 +88,7 @@ const RoomsPage = () => {
                                         <span>Lokasi: {room.location}</span>
                                     </div>
                                     <div className="flex items-start gap-2 text-gray-500 text-sm">
-                                        <CheckCircle size={16} className="text-blue-400 mt-1 flex-shrink-0" />
+                                        <CheckCircle size={16} className="text-blue-400 mt-1 shrink-0" />
                                         <span>Fasilitas: {room.facilities}</span>
                                     </div>
 

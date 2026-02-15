@@ -1,10 +1,8 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import Sidebar from "../components/layout/Sidebar";
 import {Clock, CheckCircle2, XCircle, AlertCircle, ChevronDown, Settings} from "lucide-react";
 
 const DashboardPage = () => {
-  const navigate = useNavigate();
   const [isProfileOpen, setIsProfileOpen] = useState(false);
 
   // Ambil data dari backend
@@ -24,12 +22,6 @@ const DashboardPage = () => {
       .join("")
       .toUpperCase()
       .slice(0, 3); 
-  };
-
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user"); 
-    navigate("/login");
   };
 
   const stats = [
