@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { loginUser } from "../api/authApi"; 
-import { Eye, EyeOff, } from "lucide-react"; 
+import { loginUser } from "../api/authApi";
+import { Eye, EyeOff, } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 
 type Errors = {
@@ -13,9 +13,9 @@ const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
-  const [errors, setErrors] = useState<Errors>({ email: "", password: "", }); 
-  const [authError, setAuthError] = useState(""); 
-  const [loading, setLoading] = useState(false); 
+  const [errors, setErrors] = useState<Errors>({ email: "", password: "", });
+  const [authError, setAuthError] = useState("");
+  const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
   const isValidEmail = (value: string) =>
@@ -51,20 +51,29 @@ const LoginPage = () => {
 
     try {
       const result = await loginUser({ email, password });
-      // Jika berhasil, simpan token ke Local Storage
+
+      // 1. Simpan data ke Local Storage
       localStorage.setItem("token", result.token);
-      // ubah objek result.user menjadi string agar bisa disimpan di localStorage
       localStorage.setItem("user", JSON.stringify(result.user));
-      // Ambil pesan sukses dari Swagger 
+
       setSuccessMsg(result.message);
       console.log("Data User:", result.user);
 
-      //delay 1.5 detik
+      // 2. LOGIKA PENGECEKAN POSITION (GANTINYA ROLE)
       setTimeout(() => {
-        navigate("/dashboard");
+        // Ambil position dari object result.user (sesuai kolom di pgAdmin)
+        const position = result.user?.position?.toLowerCase();
+
+        if (position === "admin") {
+          // Jika admin, arahkan ke dashboard khusus admin
+          navigate("/admin/dashboard");
+        } else {
+          // Jika mahasiswa (Amalia/Felicia), arahkan ke dashboard biasa
+          navigate("/dashboard");
+        }
       }, 1500);
 
-      //  di sini bisa arahkan ke halaman tujuan
+      //  di sini bisa arahkan ke halaman tujuan
     } catch (error: any) {
       // Jika gagal (email salah/CORS error), tampilkan pesan error
       setAuthError(error);
@@ -142,7 +151,7 @@ const LoginPage = () => {
             type="submit"
             disabled={loading}
             className={`w-full py-3.5 rounded-xl mt-1 font-bold text-white shadow-lg transition-all duration-200 transform 
-            ${loading
+            ${loading
                 ? 'bg-blue-300 cursor-not-allowed scale-100'
                 : 'bg-blue-800 hover:bg-blue-900 active:bg-blue-950 active:scale-95 hover:shadow-blue-200'
               }`}
