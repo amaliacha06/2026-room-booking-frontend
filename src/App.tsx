@@ -6,6 +6,7 @@ import RoomsPage from "./pages/RoomsPage";
 import BookingHistoryPage from "./pages/BookingHistoryPage";
 import Sidebar from "./components/layout/Sidebar"; 
 import ManageBookingsPage from "./pages/admin/ManageBookingsPage";
+import ManageRoomsPage from "./pages/admin/ManageRoomsPage"
 
 // Komponen Dashboard Admin Sederhana
 const AdminDashboard = () => (
@@ -35,6 +36,7 @@ function App() {
         {/* --- TAMBAHKAN ROUTE ADMIN DI SINI --- */}
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
         <Route path="/admin/bookings" element={<ManageBookingsPage />} />
+        <Route path="/admin/rooms" element={<ManageRoomsPage />} />
       </Routes>
     </Router>
   );
