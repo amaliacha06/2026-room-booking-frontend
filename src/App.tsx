@@ -4,29 +4,20 @@ import RegisterPage from "./pages/RegisterPage";
 import DashboardPage from "./pages/DashboardPage";
 import RoomsPage from "./pages/RoomsPage";
 import BookingHistoryPage from "./pages/BookingHistoryPage";
-import Sidebar from "./components/layout/Sidebar"; // Sesuaikan jalur folder Sidebar kamu
+import Sidebar from "./components/layout/Sidebar"; 
+import ManageBookingsPage from "./pages/admin/ManageBookingsPage";
 
 // Komponen Dashboard Admin Sederhana
 const AdminDashboard = () => (
   <div className="flex">
     <Sidebar /> 
     <div className="flex-1 p-10">
-      <h1 className="text-2xl font-bold text-blue-900">Dashboard Admin 🏗️</h1>
+      <h1 className="text-2xl font-bold text-blue-900">Dashboard Admin</h1>
       <p className="mt-2 text-gray-500">Selamat datang kembali, Admin!</p>
     </div>
   </div>
 );
 
-// Komponen Persetujuan Admin Sederhana
-const ManageBookings = () => (
-  <div className="flex">
-    <Sidebar /> 
-    <div className="flex-1 p-10">
-      <h1 className="text-2xl font-bold text-blue-900">Persetujuan Booking 📋</h1>
-      <p className="mt-2 text-gray-500">Daftar booking yang perlu di-approve.</p>
-    </div>
-  </div>
-);
 
 function App() {
   return (
@@ -43,7 +34,7 @@ function App() {
 
         {/* --- TAMBAHKAN ROUTE ADMIN DI SINI --- */}
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
-        <Route path="/admin/bookings" element={<ManageBookings />} />
+        <Route path="/admin/bookings" element={<ManageBookingsPage />} />
       </Routes>
     </Router>
   );
