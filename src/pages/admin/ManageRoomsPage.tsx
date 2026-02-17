@@ -16,7 +16,7 @@ const ManageRoomsPage = () => {
     const [rooms, setRooms] = useState<Room[]>([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedRoom, setSelectedRoom] = useState<Room | null>(null);
-    const [errors, setErrors] = useState<Record<string, string>>({}); 
+    const [errors, setErrors] = useState<Record<string, string>>({});
     const token = localStorage.getItem("token");
 
     const [formData, setFormData] = useState({
@@ -64,7 +64,7 @@ const ManageRoomsPage = () => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!validateForm()) return; 
+        if (!validateForm()) return;
 
         try {
             const config = {
@@ -111,7 +111,7 @@ const ManageRoomsPage = () => {
     };
 
     const handleOpenModal = (room: Room | null = null) => {
-        setErrors({}); 
+        setErrors({});
         if (room) {
             setSelectedRoom(room);
             setFormData({
@@ -126,16 +126,16 @@ const ManageRoomsPage = () => {
     };
 
     return (
-        <div className="flex bg-blue-50 min-h-screen">
+        <div className="flex bg-blue-50/50 min-h-screen">
             <Sidebar />
             <main className="flex-1 px-8 pt-20 pb-12 md:px-12 h-screen overflow-y-auto">
                 <div className="max-w-7xl mx-auto text-slate-900">
                     <header className="flex justify-between items-end mb-8">
                         <div>
-                            <h1 className="text-3xl font-extrabold text-blue-900">Kelola Ruangan</h1>
-                            <p className="text-gray-500 mt-1 font-medium">Sinkronisasi data ruangan kampus</p>
+                            <h1 className="text-2xl font-extrabold text-blue-900">Kelola Ruangan</h1>
+                            <p className="text-gray-500 mt-2 font-medium">Sinkronisasi data ruangan kampus</p>
                         </div>
-                        <button onClick={() => handleOpenModal()} className="bg-blue-800 text-white px-6 py-3.5 rounded-2xl font-bold flex items-center gap-2 hover:bg-blue-900 transition-all active:scale-95 shadow-lg">
+                        <button onClick={() => handleOpenModal()} className="bg-blue-800 text-white px-6 py-2.5 rounded-2xl font-bold flex items-center gap-2 hover:bg-blue-900 transition-all active:scale-95 shadow-lg">
                             <Plus size={18} strokeWidth={3} /> Tambah Data
                         </button>
                     </header>
@@ -152,7 +152,7 @@ const ManageRoomsPage = () => {
                                     <th className="px-6 py-4 w-32 text-center">Aksi</th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-blue-900 font-bold">
+                            <tbody className="divide-y divide-blue-900 font-bold ">
                                 {rooms.map((room, index) => (
                                     <tr key={room.id} className="hover:bg-blue-50/50 transition-colors group text-slate-700 border-b border-gray-50">
 
@@ -173,7 +173,7 @@ const ManageRoomsPage = () => {
                                             </div>
                                         </td>
 
-                                        <td className="px-6 py-4 text-center align-middle">
+                                        <td className="px-6 py-4 text-center align-middle ">
                                             <div className="flex items-center justify-center gap-3">
                                                 <span className="font-semibold text-blue-900 text-base tracking-tight leading-tight">
                                                     {room.name}
@@ -305,7 +305,7 @@ const ManageRoomsPage = () => {
                         </div>
                     </div>
                 )}
-                
+
                 {alertConfig.isOpen && (
                     <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
                         <div className="bg-white rounded-3xl shadow-2xl max-w-sm w-full p-6 text-center animate-in zoom-in">

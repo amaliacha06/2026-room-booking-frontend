@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import Sidebar from "../../components/layout/Sidebar";
 import axios from "axios";
-import { Settings2, User, Home, ChevronRight, Trash2, CheckCircle, X } from "lucide-react";
+import { Settings2, User, Home, ChevronRight, Trash2, CheckCircle, X, Search } from "lucide-react";
 
 interface Booking {
   id: number;
@@ -45,7 +45,7 @@ const ManageBookingsPage = () => {
     try {
       // Pastikan URL ini sesuai dengan yang ada di Controller Backend 
       await axios.put(`http://localhost:5135/api/bookings/${selectedBooking.id}/status`,
-        JSON.stringify(status), 
+        JSON.stringify(status),
         {
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -105,25 +105,46 @@ const ManageBookingsPage = () => {
       }
     });
   };
-  const formatDate = (date: string) => new Date(date).toLocaleDateString('id-ID', {
-    day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'
-  });
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString("id-ID", {
+      day: "2-digit",
+      month: "long",
+      year: "numeric",
+    });
+  };
+  const [search, setSearch] = useState(""); // Tambahkan ini di bagian atas komponen
 
   return (
     <div className="flex bg-blue-50/50 min-h-screen">
       <Sidebar />
       <main className="flex-1 px-8 pt-20 pb-12 md:px-12 h-screen overflow-y-auto">
         <div className="max-w-7xl mx-auto">
-          <header className="mb-8">
-            <h1 className="text-2xl font-extrabold text-blue-900">Manajemen Pemesanan</h1>
-            <p className="text-gray-500 mt-1">Pantau dan kelola seluruh pengajuan peminjaman ruangan</p>
+          <header className="flex flex-col md:flex-row justify-between items-end mb-10 gap-6">
+            {/* SISI KIRI: Judul & Deskripsi */}
+            <div>
+              <h1 className="text-3xl font-black text-blue-900 tracking-tight">Manajemen Pemesanan</h1>
+              <p className="text-gray-500 mt-2 font-medium">Pantau dan kelola seluruh pengajuan peminjaman ruangan</p>
+            </div>
+
+            {/* SISI KANAN: Bar Pencarian (Ganti flex-1 menjadi w-auto) */}
+            <div className="relative w-full md:w-64"> {/* Gunakan md:w-72 untuk mengatur lebar spesifik */}
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+              <input
+                type="text"
+                placeholder="search..."
+                className="w-full bg-white border border-slate-200 rounded-2xl pl-12 pr-2 py-3 focus:border-blue-700 outline-none shadow-sm transition-all text-sm font-medium"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+            </div>
           </header>
 
           <div className="bg-white rounded-2xl shadow-xl shadow-blue-900/5 overflow-hidden border border-gray-100">
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="bg-blue-900 text-center text-white text-[14px] uppercase tracking-[0.15em]">
-                  <th className="px-6 py-4 font-bold  w-12">No</th>
+                  <th className="px-6 py-4 font-bold w-12">No</th>
                   <th className="px-6 py-4 font-bold w-50">Username & Ruangan</th>
                   <th className="px-6 py-4 font-bold w-50">Tujuan</th>
                   <th className="px-6 py-4 font-bold whitespace-nowrap w-35">Tanggal Pengajuan</th>
@@ -131,52 +152,64 @@ const ManageBookingsPage = () => {
                   <th className="px-6 py-4 font-bold w-28">Aksi</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100">
-                {bookings.map((booking, index) => (
-                  <tr key={booking.id} className="hover:bg-blue-50/30 transition-colors group">
-                    <td className="px-6 py-5 text-center text-gray-500 font-medium">{index + 1}</td>
-                    <td className="px-6 py-5">
-                      <div className="flex flex-col">
-                        <span className="font-bold text-blue-900 flex items-center gap-1.5">
-                          <User size={14} className="text-blue-500 shrink-0" /> {booking.userName}
+              <tbody className="divide-y divide-blue-50 ">
+                {bookings
+                  .filter((booking) => {
+                    // 1. Ubah dulu tanggal dari DB ke format string yang dibaca user (misal: 16 Maret 2024)
+                    const formattedDate = booking.createdAt ? formatDate(booking.createdAt).toLowerCase() : "";
+
+                    // 2. Gabungkan pencarian
+                    return (
+                      booking.userName?.toLowerCase().includes(search.toLowerCase()) ||
+                      booking.roomName?.toLowerCase().includes(search.toLowerCase()) ||
+                      formattedDate.includes(search.toLowerCase()) // Sekarang "16" atau "Maret" bakal ketemu
+                    );
+                  })
+                  .map((booking, index) => (
+                    <tr key={booking.id} className="hover:bg-blue-50/50 transition-colors group">
+                      <td className="px-6 py-5 text-center text-gray-500 font-medium">{index + 1}</td>
+                      <td className="px-6 py-5">
+                        <div className="flex flex-col">
+                          <span className="font-bold text-blue-900 flex items-center gap-1.5">
+                            <User size={14} className="text-blue-500 shrink-0" /> {booking.userName}
+                          </span>
+                          <span className="text-base text-gray-600 mt-1 flex items-center gap-1.5 font-medium whitespace-nowrap">
+                            <Home size={13} className="text-gray-500" /> {booking.roomName}
+                          </span>
+                        </div>
+                      </td>
+                      <td className="px-6 py-5">
+                        <p className="text-sm font-med text-gray-600 leading-relaxed line-clamp-2">{booking.purpose}</p>
+                      </td>
+                      <td className="px-6 py-5 text-center">
+                        <span className="text-[15px] text-base text-gray-600 px-3 py-1 inline-flex items-center">
+                          {formatDate(booking.createdAt)}
                         </span>
-                        <span className="text-base text-gray-600 mt-1 flex items-center gap-1.5 font-medium whitespace-nowrap">
-                          <Home size={13} className="text-gray-500" /> {booking.roomName}
+                      </td>
+                      <td className="px-6 py-5 text-center">
+                        <span className={`px-4 py-1.5 rounded-full text-[10px] font-black tracking-widest uppercase border shadow-sm ${booking.status === 'Approved' ? 'bg-green-50 text-green-600 border-green-300' :
+                          booking.status === 'Pending' ? 'bg-amber-50 text-amber-600 border-amber-300' :
+                            booking.status === 'Rejected' ? 'bg-red-50 text-red-600 border-red-300' :
+                              booking.status === 'Canceled' ? 'bg-gray-100 text-gray-500 border-gray-300' :
+                                booking.status === 'Selesai' ? 'bg-blue-50 text-blue-700 border-blue-300' :
+                                  'bg-slate-50 text-slate-400 border-slate-300'
+                          }`}>
+                          {booking.status}
                         </span>
-                      </div>
-                    </td>
-                    <td className="px-6 py-5">
-                      <p className="text-sm font-med text-gray-600 leading-relaxed line-clamp-2">{booking.purpose}</p>
-                    </td>
-                    <td className="px-6 py-5 text-center">
-                      <span className="text-[15px] text-base text-gray-600 px-3 py-1 inline-flex items-center">
-                        {formatDate(booking.createdAt)}
-                      </span>
-                    </td>
-                    <td className="px-6 py-5 text-center">
-                      <span className={`px-4 py-1.5 rounded-full text-[10px] font-black tracking-widest uppercase border shadow-sm ${booking.status === 'Approved' ? 'bg-green-50 text-green-600 border-green-300' :
-                        booking.status === 'Pending' ? 'bg-amber-50 text-amber-600 border-amber-300' :
-                          booking.status === 'Rejected' ? 'bg-red-50 text-red-600 border-red-300' :
-                            booking.status === 'Canceled' ? 'bg-gray-100 text-gray-500 border-gray-300' :
-                              booking.status === 'Selesai' ? 'bg-blue-50 text-blue-700 border-blue-300' :
-                                'bg-slate-50 text-slate-400 border-slate-300'
-                        }`}>
-                        {booking.status}
-                      </span>
-                    </td>
-                    <td className="px-6 py-5">
-                      <div className="flex justify-center">
-                        <button
-                          onClick={() => { setSelectedBooking(booking); setIsEditModalOpen(true); }}
-                          className="p-2.5 bg-white text-blue-800 border border-blue-100 rounded-xl hover:bg-blue-800 hover:text-white shadow-sm transition-all flex items-center gap-2 active:scale-95"
-                        >
-                          <Settings2 size={18} />
-                          <span className="text-xs font-bold uppercase tracking-wider">Kelola</span>
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
+                      </td>
+                      <td className="px-6 py-5">
+                        <div className="flex justify-center">
+                          <button
+                            onClick={() => { setSelectedBooking(booking); setIsEditModalOpen(true); }}
+                            className="p-2.5 bg-white text-blue-800 border border-blue-100 rounded-xl hover:bg-blue-800 hover:text-white shadow-sm transition-all flex items-center gap-2 active:scale-95"
+                          >
+                            <Settings2 size={18} />
+                            <span className="text-xs font-bold uppercase tracking-wider">Kelola</span>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
               </tbody>
             </table>
           </div>
@@ -249,14 +282,14 @@ const ManageBookingsPage = () => {
               <p className="text-gray-600 text-sm leading-relaxed mb-6">
                 {alertConfig.title === 'Update Berhasil' ? (<>Booking <span className="font-bold text-slate-800">{selectedBooking?.roomName}</span> berhasil di-<span>{alertConfig.message.split('di-')[1]}</span></>
                 ) : alertConfig.title === 'Konfirmasi Hapus' ? (<>Apakah Anda yakin ingin menghapus permanen peminjaman di <span className="font-semibold text-red-600">{selectedBooking?.roomName}</span>?
-                  </>) : (
+                </>) : (
                   alertConfig.message)}
               </p>
               <div className="flex gap-3">
                 {alertConfig.onConfirm ? (
                   <><button onClick={() => setAlertConfig({ ...alertConfig, isOpen: false })} className="flex-1 py-4 border-2 border-gray-200 rounded-2xl font-bold text-gray-500 transition-all duration-300 hover:bg-gray-200 hover:text-gray-600 active:scale-95">Batal</button>
                     <button onClick={() => { alertConfig.onConfirm?.(); setAlertConfig({ ...alertConfig, isOpen: false }); }} className="flex-1 py-4 bg-red-600 text-white font-bold rounded-2xl transition-all duration-300 hover:bg-red-700 hover:shadow-lg active:scale-95">Ya, Hapus</button>
-                  </> ) : (
+                  </>) : (
                   <button
                     onClick={() => setAlertConfig({ ...alertConfig, isOpen: false })}
                     className="w-full py-4 bg-blue-900 text-white font-bold rounded-2xl transition-all duration-300 hover:bg-blue-950 hover:shadow-lg hover:shadow-blue-900/20 active:scale-95">
