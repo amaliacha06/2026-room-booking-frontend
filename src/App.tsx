@@ -8,17 +8,7 @@ import Sidebar from "./components/layout/Sidebar";
 import ManageBookingsPage from "./pages/admin/ManageBookingsPage";
 import ManageRoomsPage from "./pages/admin/ManageRoomsPage";
 import ManageUsersPage from "./pages/admin/ManageUsersPage"
-
-// Komponen Dashboard Admin Sederhana
-const AdminDashboard = () => (
-  <div className="flex">
-    <Sidebar /> 
-    <div className="flex-1 p-10">
-      <h1 className="text-2xl font-bold text-blue-900">Dashboard Admin</h1>
-      <p className="mt-2 text-gray-500">Selamat datang kembali, Admin!</p>
-    </div>
-  </div>
-);
+import AdminDashboard from "./pages/admin/AdminDashboard"
 
 
 function App() {

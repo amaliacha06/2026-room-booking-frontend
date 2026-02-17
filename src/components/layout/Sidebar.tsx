@@ -1,7 +1,6 @@
 import { LayoutDashboard, DoorOpen, LogOut, Warehouse, Users, ClipboardList, History } from "lucide-react";
 import { useNavigate, Link, useLocation } from "react-router-dom";
 
-
 const Sidebar = () => {
     const location = useLocation(); // Untuk mendeteksi menu mana yang sedang aktif
     const navigate = useNavigate();
@@ -70,7 +69,7 @@ const Sidebar = () => {
                 <div>
                     <h1 className="text-2xl font-bold tracking-tight text-blue-900">Roomie</h1>
                     <span className="text-[10px] font-bold text-blue-500 uppercase tracking-widest bg-blue-50 px-2 py-0.5 rounded">
-                        {role || 'Guest'} Panel
+                        {role || 'Guest'}
                     </span>
                 </div>
             </div>
